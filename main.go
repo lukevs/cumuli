@@ -1,10 +1,8 @@
 // Cumuli - A followings visualizer for SoundCloud
 
 // To do:
-//  - Eliminate link duplicates ()
+//  - Eliminate link duplicates (ex: source: 1, target: 2 && source: 2, target: 1)
 //  - Add http-based error handling
-//  - Add weight-based circle radius
-//  - Hide static directory listings 
 
 package main 
 
@@ -74,8 +72,7 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Check if the JSON file already exists
-    filename := `./static/json/` + uParam + `.json`
+    var filename string = `./static/json/` + uParam + `.json`
 
     // Handle file doesn't exist
     if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -132,6 +129,12 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
 
 // StaticHandler handles the static assets of the app.
 func StaticHandler(rw http.ResponseWriter, r *http.Request) {
+
+    // Only make .json and .css routes public
+    if ! (strings.HasSuffix(r.URL.Path, ".json") || strings.HasSuffix(r.URL.Path, ".css")) {
+        http.NotFound(rw, r)
+        return
+    }
     http.ServeFile(rw, r, r.URL.Path[1:])
 }
 
@@ -149,8 +152,11 @@ func GetAllFollowings(users []string) (<-chan Followings) {
         var wg sync.WaitGroup
 
         // GetFollowings for each user
-        for _, u := range users {
+        for i, u := range users {
 
+            if i > 0 && i % 100 == 0 {
+                time.Sleep(time.Second)
+            }
             wg.Add(1)
             go func(u string) {
                 cf <- Followings{Whoms: GetFollowings(u), Who:u}
@@ -175,7 +181,7 @@ func GetFollowings(user string) ([]string) {
     // Get the Soundcloud API client id
     clientId := os.Getenv("SC_CLIENT_ID")
     if clientId == "" {
-        panic("darn")
+        log.Fatal("You forgot SC_CLIENT_ID")
     }
 
     // Get u's number of followings
@@ -188,7 +194,7 @@ func GetFollowings(user string) ([]string) {
 
     body, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        panic(err)
+        panic("here")
     }
 
     // user object to store unmarshalled json
@@ -313,14 +319,4 @@ func GetSharedFollowings(users *[]string) (*Result) {
 
     // Return a pointer to a Result object
     return &Result{Nodes: nodes, Links: links}
-}
-
-func noDirListing(h http.Handler) http.HandlerFunc {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if strings.HasSuffix(r.URL.Path, "/") {
-            http.NotFound(w, r)
-            return
-        }
-        h.ServeHTTP(w, r)
-    })
 }

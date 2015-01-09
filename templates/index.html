@@ -24,7 +24,7 @@
             .attr("height", height);
 
         
-        d3.json("/{{.}}", function(error, graph) {
+        d3.json("{{.}}", function(error, graph) {
             force
                 .nodes(graph.nodes)
                 .links(graph.links)
@@ -39,7 +39,12 @@
                 .data(graph.nodes)
                 .enter().append("circle")
                 .attr("class", "node")
-                .attr("r", 10)
+                .attr("r", function(d) { 
+                    if (d.group != 1) {
+                        return d.weight * 3; 
+                    }
+                    return 10;
+                })
                 .style("fill", function(d) { return color(d.group); })
                 .call(force.drag);
 
