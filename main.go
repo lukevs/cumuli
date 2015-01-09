@@ -1,24 +1,30 @@
 // Cumuli - A followings visualizer for SoundCloud
 
 // To do:
-//  - Eliminate link duplicates
-//  - Handle invalid users
+//  - Eliminate link duplicates ()
+//  - Add http-based error handling
+//  - Add weight-based circle radius
+//  - Hide static directory listings 
 
 package main 
 
 import (
     "encoding/json"
+    "html/template"
     "io/ioutil"
     "log"
     "math"
     "net/http"
     "os"
+    "path"
     "strconv"
     "strings"
     "sync"
+    "time"
 )
 
-const NUM_RESULTS = 50
+const EXPIRE_TIME = 60 // Expiration time for the static JSON files.
+const NUM_RESULTS = 50 // Number of results returned in each SoundCloud query.
 
 // A type for the final JSON result.
 type Result struct {
@@ -38,24 +44,26 @@ type Link struct {
     Target int `json:"target"`
 }
 
-// A type for a user's followings
+// A type for a user's followings.
 type Followings struct {
     Whoms []string
     Who string
 }
 
-// Types for soundcloud unmarshaling
+// Types for soundcloud unmarshaling.
 type scUser struct { FollowingCount float64  `json:"followings_count"` }
 type scFollowing struct { Permalink string `json:"permalink"`}
 
 func main() {
-    // Handle home
+    // Routes
     http.HandleFunc("/", MainHandler)
+    http.HandleFunc("/static/", StaticHandler)
 
     log.Println("Running on port :8080")
     http.ListenAndServe(":8080", nil)
 }
 
+// MainHandler handles the route '/'.
 func MainHandler(rw http.ResponseWriter, r *http.Request) {
 
     // Get the query parameter for u
@@ -66,19 +74,70 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Split fParam into individual users
-    users := strings.Split(uParam, " ")
+    // Check if the JSON file already exists
+    filename := `./static/json/` + uParam + `.json`
 
-    result := GetSharedFollowings(&users)
+    // Handle file doesn't exist
+    if _, err := os.Stat(filename); os.IsNotExist(err) {
 
-    out, err := json.Marshal(*result)
-    if err != nil {
-        log.Fatal(err)
+        // Split fParam into individual users
+        users := strings.Split(uParam, " ")
+
+        // Get the shared followings among the users
+        result := GetSharedFollowings(&users)
+
+        // JSON marshal the result
+        out, err := json.Marshal(*result)
+        if err != nil {
+            http.Error(rw, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        // Create a file <uParam>.json
+        f, err := os.Create(filename)
+        if err != nil {
+            http.Error(rw, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer f.Close()
+
+        // Store the JSON in it
+        _, err = f.Write(out)
+        if err != nil {
+            http.Error(rw, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        // Hold on to the result for EXPIRE_TIME seconds
+        // to cover user refreshes
+        go func (filename string) {
+            time.Sleep(time.Second * EXPIRE_TIME)
+            os.Remove(filename)
+        } (filename)
     }
 
-    rw.Write(out)
+    // Create a template for the result
+    fp := path.Join("templates", "index.html")
+    tmpl, err := template.ParseFiles(fp)
+    if err != nil {
+        http.Error(rw, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Serve the template
+    if err := tmpl.ExecuteTemplate(rw, "filename", filename); err != nil {
+        http.Error(rw, err.Error(), http.StatusInternalServerError)
+    }
 }
 
+// StaticHandler handles the static assets of the app.
+func StaticHandler(rw http.ResponseWriter, r *http.Request) {
+    http.ServeFile(rw, r, r.URL.Path[1:])
+}
+
+// GetAllFollowings returns a channel of Followings objects for the 
+// given users.
+// A channel is used to concurrently handle the calls to GetFollowings.
 func GetAllFollowings(users []string) (<-chan Followings) {
 
     // Create a channel for the followings
@@ -107,6 +166,8 @@ func GetAllFollowings(users []string) (<-chan Followings) {
 
 }
 
+// GetFollowings returns a slice of strings containing the usernames of 
+// the followings of the provided user.
 func GetFollowings(user string) ([]string) {
 
     var url string
@@ -173,6 +234,9 @@ func GetFollowings(user string) ([]string) {
     return followings
 }
 
+
+// GetSharedFollowings creates a D3-formatted result containing nodes and links for
+// all users followed by at least two of the given users.
 func GetSharedFollowings(users *[]string) (*Result) {
     
     // Get a channel of Followings for the given users
@@ -234,11 +298,10 @@ func GetSharedFollowings(users *[]string) (*Result) {
             }
             checkSet[f] = true
         }
-
         fIndex++
     }
 
-    // Iterate through followings checking the map
+    // Iterate through followings checking the set
     for _, fs := range followings {
         for _, f := range fs.Whoms {
             if resultSet[f] {
@@ -250,5 +313,14 @@ func GetSharedFollowings(users *[]string) (*Result) {
 
     // Return a pointer to a Result object
     return &Result{Nodes: nodes, Links: links}
+}
 
+func noDirListing(h http.Handler) http.HandlerFunc {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if strings.HasSuffix(r.URL.Path, "/") {
+            http.NotFound(w, r)
+            return
+        }
+        h.ServeHTTP(w, r)
+    })
 }
