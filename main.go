@@ -1,13 +1,16 @@
-// Cumuli - A followings visualizer for SoundCloud
+// cumuli - A followings visualizer for SoundCloud
 
 // To do:
-//  - Eliminate link duplicates (ex: source: 1, target: 2 && source: 2, target: 1)
+//  - Add web frontend
+//      - Basic home UI
+//      - Layout-based templating
 //  - Add http-based error handling
 
 package main 
 
 import (
     "encoding/json"
+    "fmt"
     "html/template"
     "io/ioutil"
     "log"
@@ -68,11 +71,17 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
     uParam := r.FormValue("u")
 
     if uParam == "" {
-        rw.Write([]byte("Gotta handle this"))
+        content, err := ioutil.ReadFile("./templates/splash.html")
+        if err != nil {
+            http.Error(rw, err.Error(), http.StatusNotFound)
+            return
+        }
+        fmt.Fprintf(rw, string(content))
         return
+
     }
 
-    var filename string = `./static/json/` + uParam + `.json`
+    var filename string = `./static/json/` + strings.Replace(uParam, " ", "+", -1) + `.json`
 
     // Handle file doesn't exist
     if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -131,7 +140,7 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
 func StaticHandler(rw http.ResponseWriter, r *http.Request) {
 
     // Only make .json and .css routes public
-    if ! (strings.HasSuffix(r.URL.Path, ".json") || strings.HasSuffix(r.URL.Path, ".css")) {
+    if ! (strings.HasSuffix(r.URL.Path, ".json") || strings.HasSuffix(r.URL.Path, ".css") || strings.HasSuffix(r.URL.Path, ".otf")) {
         http.NotFound(rw, r)
         return
     }
@@ -152,11 +161,7 @@ func GetAllFollowings(users []string) (<-chan Followings) {
         var wg sync.WaitGroup
 
         // GetFollowings for each user
-        for i, u := range users {
-
-            if i > 0 && i % 100 == 0 {
-                time.Sleep(time.Second)
-            }
+        for _, u := range users {
             wg.Add(1)
             go func(u string) {
                 cf <- Followings{Whoms: GetFollowings(u), Who:u}
@@ -194,7 +199,7 @@ func GetFollowings(user string) ([]string) {
 
     body, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        panic("here")
+        panic(err)
     }
 
     // user object to store unmarshalled json

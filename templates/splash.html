@@ -1,4 +1,3 @@
-{{define "filename"}}
 <html>
 <head>
     <title>cumuli | hi</title>
@@ -39,7 +38,33 @@
                         </nav>
                     </div>
                 </div>
-                <div id="graph">
+                <div class="inner cover">
+                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                    <svg width="120px" height="120px" viewBox="0 0 126 126" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                        <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+                        <title>cumuli_logo</title>
+                        <desc>Created with Sketch.</desc>
+                        <defs></defs>
+                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                            <circle id="Oval-1" fill="#FA6900" sketch:type="MSShapeGroup" cx="63" cy="63" r="14"></circle>
+                            <path d="M63.5,24.5 L63.5,44.5" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                            <path d="M63.5,81.5 L63.5,101.5" id="Line-2" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                            <circle id="Oval-2" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="10" r="10"></circle>
+                            <circle id="Oval-3" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="116" r="10"></circle>
+                            <path d="M81.5,63 L101.5,63" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                            <path d="M24.5,63 L44.5,63" id="Line-3" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                            <circle id="Oval-4" fill="#4A93A2" sketch:type="MSShapeGroup" cx="10" cy="63" r="10"></circle>
+                            <circle id="Oval-5" fill="#4A93A2" sketch:type="MSShapeGroup" cx="116" cy="63" r="10"></circle>
+                        </g>
+                    </svg>
+                    <h1>cumuli</h1>
+                    <p class="lead">
+                        map your <span id="soundcloud">SoundCloud</span> followings
+                    </p>
+                    <p class="lead">
+                        <a href="/about" class="btn btn-lg btn-default">Learn more</a>
+                    </p>
+                    
                 </div>
                 <div class="mastfoot">
                     <div class="inner">
@@ -49,65 +74,5 @@
             </div>
         </div>
     </div>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script>
-        var width = window.innerWidth/1.7, 
-            height = window.innerHeight;
-
-        var color = d3.scale.category20()
-
-        var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(100)
-            .size([width, height]);
-
-        var svg = d3.select("#graph").append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        d3.json("{{.}}", function(error, graph) {
-            force
-                .nodes(graph.nodes)
-                .links(graph.links)
-                .start()
-
-            var link = svg.selectAll(".link")
-                .data(graph.links)
-                .enter().append("line")
-                .attr("class", "link");
-
-            var node = svg.selectAll(".node")
-                .data(graph.nodes)
-                .enter().append("circle")
-                .attr("class", "node")
-                .attr("r", function(d) { 
-                    if (d.group != 1) {
-                        return d.weight * 3; 
-                    }
-                    return 10;
-                })
-                .style("fill", function(d) {
-                    if (d.group == 1) {
-                        return "#FA6900"
-                    }
-                    return "#4A93A2"
-                })
-                .call(force.drag);
-
-            node.append("title")
-                .text(function(d) { return d.name; });
-
-            force.on("tick", function() {
-                link.attr("x1", function(d) { return d.source.x; })
-                    .attr("y1", function(d) { return d.source.y; })
-                    .attr("x2", function(d) { return d.target.x; })
-                    .attr("y2", function(d) { return d.target.y; });
-
-                node.attr("cx", function(d) { return d.x; })
-                    .attr("cy", function(d) { return d.y; });
-            });
-        });
-    </script>
 </body>
 </html>
-{{end}}

@@ -1,6 +1,253 @@
+/* from Bootstrap */
+/*
+ * Globals
+ */
+
+/* Links */
+a,
+a:focus,
+a:hover {
+  color: #8BBAC4;
+  font-weight: bold;
+}
+
+/* Custom default button */
+.btn-default,
+.btn-default:hover,
+.btn-default:focus {
+  text-shadow: none; /* Prevent inheritence from `body` */
+  font-weight: normal;
+  background-color: #4A93A2;
+  border: 1px solid #4A93A2;
+}
+
+.btn-default {
+    color: #E0E4CC;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+    color: #8BBAC4;
+}
+/*
+ * Base structure
+ */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  text-align: center;
+}
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+  overflow:auto;
+}
+
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Padding for spacing */
+.inner {
+  padding: 30px;
+}
+
+
+/*
+ * Header
+ */
+.masthead-brand {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.masthead-nav > li {
+  display: inline-block;
+}
+.masthead-nav > li + li {
+  margin-left: 20px;
+}
+.masthead-nav > li > a {
+  padding-right: 0;
+  padding-left: 0;
+  font-size: 16px;
+  font-weight: normal;
+  color: #8BBAC4;
+  color: rgba(139, 186, 196, .75);
+  border-bottom: 2px solid transparent;
+}
+.masthead-nav > li > a:hover,
+.masthead-nav > li > a:focus {
+  background-color: transparent;
+  border-bottom-color: #8BBAC4;
+  border-bottom-color: rgba(139, 186, 196, .25);;
+}
+.masthead-nav > .active > a,
+.masthead-nav > .active > a:hover,
+.masthead-nav > .active > a:focus {
+  color: #8BBAC4;
+  border-bottom-color: #8BBAC4;
+}
+
+@media (min-width: 768px) {
+  .masthead-brand {
+    float: left;
+  }
+  .masthead-nav {
+    float: right;
+  }
+}
+
+
+/*
+ * Cover
+ */
+
+.cover {
+  padding: 0 20px;
+}
+.cover .btn-lg {
+  padding: 10px 20px;
+}
+
+
+/*
+ * Footer
+ */
+
+.mastfoot {
+  color: #8BBAC4;
+  color: rgba(139, 186, 196, .5);
+}
+
+
+/*
+ * Affix and center
+ */
+
+@media (min-width: 768px) {
+  /* Pull out the header and footer */
+  .masthead {
+    position: fixed;
+    top: 0;
+  }
+  .mastfoot {
+    position: fixed;
+    bottom: 0;
+  }
+  /* Start the vertical centering */
+  .site-wrapper-inner {
+    vertical-align: middle;
+  }
+  /* Handle the widths */
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 100%; /* Must be percentage or pixels for horizontal alignment */
+  }
+}
+
+@media (min-width: 992px) {
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 700px;
+  }
+}
+
+/* mine */
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBook.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBookIt.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabMedium.otf') format('opentype');
+    font-weight: medium;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabMediumIt.otf') format('opentype');
+    font-weight: medium;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBoldIt.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabLightIt.otf') format('opentype');
+    font-weight: lighter;
+    font-style: italic;
+}
+
+body {
+    font-family: 'KlinicSlab', sans-serif;
+    background-color: #E0E4CC;
+
+}
+
+h1, h2 {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 100px;
+    color: #4A93A2;
+}
+
+p {
+    color: #8BBAC4;
+}
+
+#soundcloud {
+    color: #F38630;
+}
+
 .node {
-    stroke: #fff;
-    stroke-width: 1.5px;
+    stroke: #E0E4CC;
+    stroke-width: 1px;
 }
 
 .link {
