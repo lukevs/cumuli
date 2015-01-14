@@ -1,4 +1,4 @@
 cumuli
 ======
 
-Map of Soundcloud followings using Go and D3
+map Soundcloud followings - Built with Go and D3

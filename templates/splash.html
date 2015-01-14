@@ -1,78 +1,36 @@
-<html>
-<head>
-    <title>cumuli | hi</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-</head>
-<body>
-    <div class="site-wrapper">
-        <div class="site-wrapper-inner">
-            <div class="cover-container">
-                <div class="masthead clearfix">
-                    <div class="inner">
-                        <a class="masthead-brand" href="#">
-                            <svg width="30px" height="30px" viewBox="0 0 126 126" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-                                <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
-                                <title>cumuli_logo</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs></defs>
-                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-                                    <circle id="Oval-1" fill="#FA6900" sketch:type="MSShapeGroup" cx="63" cy="63" r="14"></circle>
-                                    <path d="M63.5,24.5 L63.5,44.5" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                                    <path d="M63.5,81.5 L63.5,101.5" id="Line-2" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                                    <circle id="Oval-2" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="10" r="10"></circle>
-                                    <circle id="Oval-3" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="116" r="10"></circle>
-                                    <path d="M81.5,63 L101.5,63" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                                    <path d="M24.5,63 L44.5,63" id="Line-3" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                                    <circle id="Oval-4" fill="#4A93A2" sketch:type="MSShapeGroup" cx="10" cy="63" r="10"></circle>
-                                    <circle id="Oval-5" fill="#4A93A2" sketch:type="MSShapeGroup" cx="116" cy="63" r="10"></circle>
-                                </g>
-                            </svg>
-                        </a>
-                        <nav>
-                            <ul class="nav masthead-nav">
-                                <li class="active"><a href="#">Home</a></li>
-                                <li><a href="/about">About</a></li>
-                                <li><a href="https://github.com/lkvnstrs/cumuli">Source</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-                <div class="inner cover">
-                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-                    <svg width="120px" height="120px" viewBox="0 0 126 126" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-                        <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
-                        <title>cumuli_logo</title>
-                        <desc>Created with Sketch.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-                            <circle id="Oval-1" fill="#FA6900" sketch:type="MSShapeGroup" cx="63" cy="63" r="14"></circle>
-                            <path d="M63.5,24.5 L63.5,44.5" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                            <path d="M63.5,81.5 L63.5,101.5" id="Line-2" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                            <circle id="Oval-2" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="10" r="10"></circle>
-                            <circle id="Oval-3" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="116" r="10"></circle>
-                            <path d="M81.5,63 L101.5,63" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                            <path d="M24.5,63 L44.5,63" id="Line-3" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                            <circle id="Oval-4" fill="#4A93A2" sketch:type="MSShapeGroup" cx="10" cy="63" r="10"></circle>
-                            <circle id="Oval-5" fill="#4A93A2" sketch:type="MSShapeGroup" cx="116" cy="63" r="10"></circle>
-                        </g>
-                    </svg>
-                    <h1>cumuli</h1>
-                    <p class="lead">
-                        map your <span id="soundcloud">SoundCloud</span> followings
-                    </p>
-                    <p class="lead">
-                        <a href="/about" class="btn btn-lg btn-default">Learn more</a>
-                    </p>
-                    
-                </div>
-                <div class="mastfoot">
-                    <div class="inner">
-                        <p>Built by <a href="https://twitter.com/lkvnstrs">Luke Van Seters</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+{{ define "title" }}<title>cumuli | hi</title>{{ end }}
+
+{{ define "navitems"}}
+<li class="active"><a href="#">Home</a></li>
+<li><a href="/about">About</a></li>
+<li><a href="https://github.com/lkvnstrs/cumuli">Source</a></li>
+{{ end }}
+
+{{ define "content" }}
+<div class="inner cover">
+    <svg width="120px" height="120px" viewBox="0 0 126 126" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+        <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+        <title>cumuli_logo</title>
+        <desc>Created with Sketch.</desc>
+        <defs></defs>
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+            <circle id="Oval-1" fill="#FA6900" sketch:type="MSShapeGroup" cx="63" cy="63" r="14"></circle>
+            <path d="M63.5,24.5 L63.5,44.5" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+            <path d="M63.5,81.5 L63.5,101.5" id="Line-2" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+            <circle id="Oval-2" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="10" r="10"></circle>
+            <circle id="Oval-3" fill="#4A93A2" sketch:type="MSShapeGroup" cx="63" cy="116" r="10"></circle>
+            <path d="M81.5,63 L101.5,63" id="Line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+            <path d="M24.5,63 L44.5,63" id="Line-3" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+            <circle id="Oval-4" fill="#4A93A2" sketch:type="MSShapeGroup" cx="10" cy="63" r="10"></circle>
+            <circle id="Oval-5" fill="#4A93A2" sketch:type="MSShapeGroup" cx="116" cy="63" r="10"></circle>
+        </g>
+    </svg>
+    <h1>cumuli</h1>
+    <p class="lead">
+        map your <span id="soundcloud">SoundCloud</span> followings
+    </p>
+    <p class="lead">
+        <a href="/about" class="btn btn-lg btn-default">Learn more</a>
+    </p> 
+</div>
+{{ end }}

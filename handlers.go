@@ -2,29 +2,25 @@ package main
 
 import (
     "encoding/json"
-    "fmt"
     "html/template"
-    "io/ioutil"
+   // "log"
     "net/http"
     "os"
-    "path"
     "strings"
     "time"
 )
+
+var templates map[string]*template.Template
 
 // MainHandler handles the route '/'.
 func MainHandler(rw http.ResponseWriter, r *http.Request) {
 
     // Get the query parameter for u
     uParam := r.FormValue("u")
-
     if uParam == "" {
-        content, err := ioutil.ReadFile("./templates/splash.html")
-        if err != nil {
-            http.Error(rw, err.Error(), http.StatusNotFound)
-            return
-        }
-        fmt.Fprintf(rw, string(content))
+
+        // Render the splash page
+        renderTemplate(rw, "splash.html", nil)
         return
 
     }
@@ -70,30 +66,29 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
         } (filename)
     }
 
-    // Create a template for the result
-    fp := path.Join("templates", "index.html")
-    tmpl, err := template.ParseFiles(fp)
-    if err != nil {
-        http.Error(rw, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    // Serve the template
-    if err := tmpl.ExecuteTemplate(rw, "filename", filename); err != nil {
-        http.Error(rw, err.Error(), http.StatusInternalServerError)
-    }
+    // Render the package
+    renderTemplate(rw, "index.html", filename)
 }
 
 // StaticHandler handles the static assets of the app.
 func StaticHandler(rw http.ResponseWriter, r *http.Request) {
 
-    // Only make .json and .css routes public
-    if (strings.HasSuffix(r.URL.Path, ".json") || 
-          strings.HasSuffix(r.URL.Path, ".css")  || 
-          strings.HasSuffix(r.URL.Path, ".otf")  || 
-          strings.HasSuffix(r.URL.Path, ".ico")) {
-        http.ServeFile(rw, r, r.URL.Path[1:])
-        return
+    suffixes := []string{".json", ".css", ".otf", ".ico"}
+
+    for _, s := range suffixes {
+        if strings.HasSuffix(r.URL.Path, s) {
+            http.ServeFile(rw, r, r.URL.Path[1:])
+            return
+        }
     }
     http.NotFound(rw, r)
+}
+
+/* Helpers */
+
+// renderTemplate is used to avoid code repetition for calling the 
+func renderTemplate(rw http.ResponseWriter, filename string, data interface{}) {
+    if err := templates[filename].ExecuteTemplate(rw, "base", data); err != nil {
+        http.Error(rw, err.Error(), http.StatusInternalServerError)
+    }
 }
