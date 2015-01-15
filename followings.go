@@ -69,7 +69,6 @@ func GetAllFollowings(users []string) (<-chan Followings) {
     } ()
 
     return cf
-
 }
 
 // GetFollowings returns a slice of strings containing the usernames of 
@@ -108,38 +107,47 @@ func GetFollowings(user string) ([]string) {
 
     // Search for the user's followings
     // Iterate to account for the results limit
+    var wg sync.WaitGroup
+
     countTo := math.Ceil(u.FollowingCount / float64(NUM_RESULTS))
     for i := 0; i < int(countTo); i++ {
 
-        url = `http://api.soundcloud.com/users/` + 
-               user + `/followings.json?client_id=` + 
-               clientId + `&offset=` + strconv.Itoa(i * 50)
-               
-        r, err = http.Get(url)
-        if err != nil {
-            panic(err)
-        }
-        defer r.Body.Close()
+        wg.Add(1)
+        go func(i int) {
 
-        body, err = ioutil.ReadAll(r.Body)
-        if err != nil {
-            panic(err)
-        }
-
-        // unmarshal into jsonFollowings
-        if err = json.Unmarshal(body, &jsonFollowings); err != nil {
-            panic(err)
-        }
-
-        for j, jf := range jsonFollowings {
-            index := j + (i * NUM_RESULTS)
-            if index >= int(u.FollowingCount) {
-                break
+            url := `http://api.soundcloud.com/users/` + 
+                   user + `/followings.json?client_id=` + 
+                   clientId + `&offset=` + strconv.Itoa(i * 50)
+                   
+            r, err := http.Get(url)
+            if err != nil {
+                panic(err)
             }
-            followings[index] = jf.Permalink   
-        }
+            defer r.Body.Close()
+
+            body, err := ioutil.ReadAll(r.Body)
+            if err != nil {
+                panic(err)
+            }
+
+            // unmarshal into jsonFollowings
+            if err = json.Unmarshal(body, &jsonFollowings); err != nil {
+                panic(err)
+            }
+
+            for j, jf := range jsonFollowings {
+                index := j + (i * NUM_RESULTS)
+                if index >= int(u.FollowingCount) {
+                    break
+                }
+                followings[index] = jf.Permalink   
+            }
+
+            wg.Done()
+        } (i)
     }
-    
+
+    wg.Wait()
     return followings
 }
 
@@ -194,7 +202,6 @@ func GetSharedFollowings(users *[]string) (*Result) {
     for fs := range cf {
 
         followings[fIndex] = fs
-
         for _, f := range fs.Whoms {
             if checkSet[f] {
                 if !resultSet[f] {
