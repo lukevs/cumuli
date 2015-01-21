@@ -1,14 +1,12 @@
 // cumuli - A followings visualizer for SoundCloud
 
 // To do:
-//  - Add http-based error handling universally
+//  - Add http-based error handling universally & logging
 //  - Add dynamic circle sizing
 //  - Add dynamic resizing w/o refresh
-//  - Add logging
 //  - Add the About page
 //  - Link the JS
 //  - Break followings.go into more sub-functions
-//  - Serve a favicon at /favicon.ico
 //  - Patch MainHandler getting called 2/3 times
 //  - Add a search bar
 //      - http://jsbin.com/iyewas/73/edit?html,js,output
@@ -29,23 +27,38 @@ import (
 
 const TEMPLATES_DIR = `./templates`
 
+var (
+    clientId string
+    redisPort = ":6379"
+)
+
 func init() {
 
+    // Set log flags
     log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
+    // Load templates
     loadTemplates()
+
+    clientId = GetClientId()
 
     // Routes
     http.HandleFunc("/", MainHandler)
+    http.HandleFunc("/u/", UserHandler)
+    http.HandleFunc("/json/", JSONHandler)
     http.HandleFunc("/static/", StaticHandler)    
 }
 
 func main() {
+
+    // Get port
     port := GetPort()
+
     log.Println("Running on port ", port)
     http.ListenAndServe(port, nil)
 }
 
+// loadTemplates loads all of the templates in TEMPLATES_DIR to be served.
 func loadTemplates() {
     if templates == nil {
         templates = make(map[string]*template.Template)
@@ -62,7 +75,7 @@ func loadTemplates() {
     }
 }
 
-// for Heroku
+// GetPort gets a PORT env if set and returns 8080 otherwise.
 func GetPort() string {
         var port = os.Getenv("PORT")
         // Set a default port if there is nothing in the environment
@@ -71,4 +84,13 @@ func GetPort() string {
                 log.Println("INFO: No PORT environment variable detected, defaulting to " + port)
         }
         return ":" + port
+}
+
+// GetClientId gets the Soundcloud API client id.
+func GetClientId() string {
+    ci := os.Getenv("SC_CLIENT_ID")
+    if ci == "" {
+        log.Fatal("You forgot SC_CLIENT_ID")
+    }
+    return ci
 }

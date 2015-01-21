@@ -1,12 +1,14 @@
+// followings.go contains the functions for managing followings for cumuli.
+
 package main
 
 import (
     "encoding/json"
     "io/ioutil"
-    "log"
+    //"log"
     "math"
     "net/http"
-    "os"
+    //"os"
     "strconv"
     "sync"
 )
@@ -76,12 +78,6 @@ func GetAllFollowings(users []string) (<-chan Followings) {
 func GetFollowings(user string) ([]string) {
 
     var url string
-
-    // Get the Soundcloud API client id
-    clientId := os.Getenv("SC_CLIENT_ID")
-    if clientId == "" {
-        log.Fatal("You forgot SC_CLIENT_ID")
-    }
 
     // Get u's number of followings
     url = `http://api.soundcloud.com/users/` + user + `.json?client_id=` + clientId
