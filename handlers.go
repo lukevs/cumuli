@@ -1,13 +1,17 @@
+// handlers.go contains the handler functions for cumuli
+
 package main 
 
 import (
     "encoding/json"
     "html/template"
-    // "log"
+    //"log"
     "net/http"
-    "os"
+    "path"
     "strings"
     "time"
+
+    "github.com/garyburd/redigo/redis"
 )
 
 var templates map[string]*template.Template
@@ -15,44 +19,61 @@ var templates map[string]*template.Template
 // MainHandler handles the route '/'.
 func MainHandler(rw http.ResponseWriter, r *http.Request) {
 
-    // Get the query parameter for u
-    uParam := r.FormValue("u")
-    if uParam == "" {
+    renderTemplate(rw, "splash.html", nil)
+}
 
-        // Render the splash page
-        renderTemplate(rw, "splash.html", nil)
+// UserHandler handles the display of D3 graphs for a given set of users
+// at the route '/u/'.
+func UserHandler(rw http.ResponseWriter, r *http.Request) {
+
+    // Get the path base
+    var jsonPath string = `/json/` + path.Base(r.URL.Path)
+
+    // Render the page
+    renderTemplate(rw, "index.html", jsonPath)
+}
+
+// JSONHandler handles the generation and display of JSON for D3 at the
+// the route '/json/'.
+func JSONHandler(rw http.ResponseWriter, r *http.Request) {
+
+    var js []byte
+
+    // Create a connection to Redis
+    c, err := redis.Dial("tcp", redisPort)
+    if err != nil {
+        http.Error(rw, err.Error(), http.StatusInternalServerError)
         return
+    }
+    defer c.Close()
 
+    // Get the path base
+    key := path.Base(r.URL.Path)
+
+    if key == "" {
+        rw.Header().Set("Content-Type", "application/json")
+        rw.Write([]byte{})
     }
 
-    var filename string = `./static/json/` + strings.Replace(uParam, " ", "+", -1) + `.json`
-
-    // Handle file doesn't exist
-    if _, err := os.Stat(filename); os.IsNotExist(err) {
+    // Check the db for base as a key
+    js, err = redis.Bytes(c.Do("GET", key))
+    if err == redis.ErrNil {
 
         // Split fParam into individual users
-        users := strings.Split(uParam, " ")
+        users := strings.Split(key, "+")
 
         // Get the shared followings among the users
-        result := GetSharedFollowings(&users)
+        result := GetSharedFollowings(&users)    
 
         // JSON marshal the result
-        out, err := json.Marshal(*result)
+        js, err = json.Marshal(*result)
         if err != nil {
             http.Error(rw, err.Error(), http.StatusInternalServerError)
             return
         }
 
-        // Create a file <uParam>.json
-        f, err := os.Create(filename)
-        if err != nil {
-            http.Error(rw, err.Error(), http.StatusInternalServerError)
-            return
-        }
-        defer f.Close()
-
-        // Store the JSON in it
-        _, err = f.Write(out)
+        // Store the JSON in Redis
+        _, err = c.Do("SET", key, js)
         if err != nil {
             http.Error(rw, err.Error(), http.StatusInternalServerError)
             return
@@ -60,14 +81,19 @@ func MainHandler(rw http.ResponseWriter, r *http.Request) {
 
         // Hold on to the result for EXPIRE_TIME seconds
         // to cover user refreshes
-        go func (filename string) {
+        go func (key string) {
             time.Sleep(time.Second * EXPIRE_TIME)
-            os.Remove(filename)
-        } (filename)
+            c, _ := redis.Dial("tcp", redisPort)
+            c.Do("DEL", key)
+        } (key)    
+    } else if err != nil {
+        http.Error(rw, err.Error(), http.StatusInternalServerError)
+        return
     }
 
-    // Render the package
-    renderTemplate(rw, "index.html", filename)
+    // Render the JSON
+    rw.Header().Set("Content-Type", "application/json")
+    rw.Write(js)
 }
 
 // StaticHandler handles the static assets of the app.
