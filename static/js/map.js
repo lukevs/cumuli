@@ -18,6 +18,15 @@ var svg = d3.select("#graph").append("svg")
 var scriptParam = document.getElementById('soundcloud-map')
 var jsonPath = scriptParam.getAttribute('jsonPath')
 
+// Loading gif
+var spinner = new Spinner({
+  lines: 9,
+  length: 15,
+  width: 5,
+  radius: 20,
+  color: '#4A93A2'
+}).spin(document.getElementById("spinner-box"));
+
 // D3
 d3.json(jsonPath, function(error, graph) {
     force
@@ -50,6 +59,9 @@ d3.json(jsonPath, function(error, graph) {
 
     node.append("title")
         .text(function(d) { return d.name; });
+
+    // Remove the loading gif
+    spinner.stop()
 
     force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })
