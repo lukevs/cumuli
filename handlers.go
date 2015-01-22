@@ -99,7 +99,7 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
 // StaticHandler handles the static assets of the app.
 func StaticHandler(rw http.ResponseWriter, r *http.Request) {
 
-    suffixes := []string{".json", ".css", ".otf", ".ico"}
+    suffixes := []string{".json", ".css", ".otf", ".ico", ".js"}
 
     for _, s := range suffixes {
         if strings.HasSuffix(r.URL.Path, s) {

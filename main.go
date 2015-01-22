@@ -5,7 +5,6 @@
 //  - Add dynamic circle sizing
 //  - Add dynamic resizing w/o refresh
 //  - Add the About page
-//  - Link the JS
 //  - Break followings.go into more sub-functions
 //  - Patch MainHandler getting called 2/3 times
 //  - Add a search bar
