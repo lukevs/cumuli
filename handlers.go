@@ -40,11 +40,7 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
     var js []byte
 
     // Create a connection to Redis
-    c, err := redis.Dial("tcp", redisPort)
-    if err != nil {
-        http.Error(rw, err.Error(), http.StatusInternalServerError)
-        return
-    }
+    c := pool.Get()
     defer c.Close()
 
     // Get the path base
@@ -56,7 +52,7 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
     }
 
     // Check the db for base as a key
-    js, err = redis.Bytes(c.Do("GET", key))
+    js, err := redis.Bytes(c.Do("GET", key))
     if err == redis.ErrNil {
 
         // Split fParam into individual users
@@ -83,7 +79,8 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
         // to cover user refreshes
         go func (key string) {
             time.Sleep(time.Second * EXPIRE_TIME)
-            c, _ := redis.Dial("tcp", redisPort)
+            c := pool.Get()
+            defer c.Close()
             c.Do("DEL", key)
         } (key)    
     } else if err != nil {

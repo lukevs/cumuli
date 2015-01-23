@@ -11,7 +11,6 @@
 //      - http://jsbin.com/iyewas/73/edit?html,js,output
 //      - http://blogs.msdn.com/b/murads/archive/2013/02/20/using-jquery-ui-autocomplete-with-the-rest-api-to-get-search-results-in-the-search-box.aspx
 //      - http://stackoverflow.com/questions/14083272/how-to-make-a-tags-box-using-jquery-with-text-input-field-tags-separated-by
-//  - Add a loading gif
 
 package main 
 
@@ -20,15 +19,18 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+    "net/url"
     "os"
     "path"
+
+    "github.com/garyburd/redigo/redis"
 )
 
 const TEMPLATES_DIR = `./templates`
 
 var (
     clientId string
-    redisPort = ":6379"
+    pool *redis.Pool
 )
 
 func init() {
@@ -39,7 +41,12 @@ func init() {
     // Load templates
     loadTemplates()
 
+    // Get the SoundCloud client Id
     clientId = GetClientId()
+
+     // Initialize the pool
+    redisServer, redisPassword := GetRedisInfo()
+    pool = NewPool(redisServer, redisPassword)
 
     // Routes
     http.HandleFunc("/", MainHandler)
@@ -50,11 +57,15 @@ func init() {
 
 func main() {
 
-    // Get port
-    port := GetPort()
+    // Get the web port
+    port := GetWebPort()
+
+    // Defer close for the pool
+    defer pool.Close()
 
     log.Println("Running on port ", port)
     http.ListenAndServe(port, nil)
+
 }
 
 // loadTemplates loads all of the templates in TEMPLATES_DIR to be served.
@@ -75,7 +86,7 @@ func loadTemplates() {
 }
 
 // GetPort gets a PORT env if set and returns 8080 otherwise.
-func GetPort() string {
+func GetWebPort() string {
         var port = os.Getenv("PORT")
         // Set a default port if there is nothing in the environment
         if port == "" {
@@ -92,4 +103,22 @@ func GetClientId() string {
         log.Fatal("You forgot SC_CLIENT_ID")
     }
     return ci
+}
+
+// GetRedisInfo gets the port and password for the Redis database
+func GetRedisInfo() (string, string) {
+
+    var redisUrl = os.Getenv("REDISTOGO_URL")
+    if redisUrl == "" {
+        return ":6379", ""
+    }
+
+    redisInfo, _ := url.Parse(redisUrl)
+    server := redisInfo.Host
+    password := ""
+    if redisInfo.User != nil {
+    password, _ = redisInfo.User.Password()
+    }
+
+    return server, password
 }
