@@ -11,6 +11,7 @@
 //      - http://jsbin.com/iyewas/73/edit?html,js,output
 //      - http://blogs.msdn.com/b/murads/archive/2013/02/20/using-jquery-ui-autocomplete-with-the-rest-api-to-get-search-results-in-the-search-box.aspx
 //      - http://stackoverflow.com/questions/14083272/how-to-make-a-tags-box-using-jquery-with-text-input-field-tags-separated-by
+//  - Fix mobile rendering
 
 package main 
 
@@ -51,6 +52,7 @@ func init() {
     // Routes
     http.HandleFunc("/", MainHandler)
     http.HandleFunc("/u/", UserHandler)
+    http.HandleFunc("/about/", AboutHandler)
     http.HandleFunc("/json/", JSONHandler)
     http.HandleFunc("/static/", StaticHandler)    
 }

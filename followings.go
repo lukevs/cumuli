@@ -5,10 +5,8 @@ package main
 import (
     "encoding/json"
     "io/ioutil"
-    //"log"
     "math"
     "net/http"
-    //"os"
     "strconv"
     "sync"
 )

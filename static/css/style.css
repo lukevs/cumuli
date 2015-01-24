@@ -3,6 +3,56 @@
  * Globals
  */
 
+/* mine */
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBook.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBookIt.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabMedium.otf') format('opentype');
+    font-weight: medium;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabMediumIt.otf') format('opentype');
+    font-weight: medium;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabBoldIt.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KlinicSlab';
+    src: url('../fonts/KlinicSlabLightIt.otf') format('opentype');
+    font-weight: lighter;
+    font-style: italic;
+}
+
 /* Links */
 a,
 a:focus,
@@ -40,6 +90,24 @@ body {
 
 body {
   text-align: center;
+  font-family: 'KlinicSlab', sans-serif;
+  background-color: #E0E4CC;
+}
+
+h1, h2 {
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 70px;
+  color: #4A93A2;
+}
+
+p {
+    color: #8BBAC4;
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
@@ -112,6 +180,11 @@ body {
   }
 }
 
+/* Splash page icon */
+  #title-icon {
+    width: 90px;
+    height: 90px;
+  }
 
 /*
  * Cover
@@ -140,6 +213,15 @@ body {
  */
 
 @media (min-width: 768px) {
+
+  h1 {
+    font-size: 95px;
+  }
+  /* Resize the icon */
+  #title-icon {
+    width: 120px;
+    height: 120px;
+  }
   /* Pull out the header and footer */
   .masthead {
     position: fixed;
@@ -162,83 +244,12 @@ body {
 }
 
 @media (min-width: 992px) {
+
   .masthead,
   .mastfoot,
   .cover-container {
     width: 700px;
   }
-}
-
-/* mine */
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabBook.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabBookIt.otf') format('opentype');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabMedium.otf') format('opentype');
-    font-weight: medium;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabMediumIt.otf') format('opentype');
-    font-weight: medium;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabBold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabBoldIt.otf') format('opentype');
-    font-weight: bold;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'KlinicSlab';
-    src: url('../fonts/KlinicSlabLightIt.otf') format('opentype');
-    font-weight: lighter;
-    font-style: italic;
-}
-
-body {
-    font-family: 'KlinicSlab', sans-serif;
-    background-color: #E0E4CC;
-
-}
-
-h1, h2 {
-    padding: 0;
-    margin: 0;
-}
-
-h1 {
-    font-weight: bold;
-    font-style: italic;
-    font-size: 100px;
-    color: #4A93A2;
-}
-
-p {
-    color: #8BBAC4;
 }
 
 #soundcloud {

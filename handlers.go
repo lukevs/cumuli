@@ -5,7 +5,6 @@ package main
 import (
     "encoding/json"
     "html/template"
-    //"log"
     "net/http"
     "path"
     "strings"
@@ -31,6 +30,13 @@ func UserHandler(rw http.ResponseWriter, r *http.Request) {
 
     // Render the page
     renderTemplate(rw, "index.html", jsonPath)
+}
+
+// AboutHandler handles the about page.
+func AboutHandler(rw http.ResponseWriter, r *http.Request) {
+
+    // Render the about page
+    renderTemplate(rw, "about.html", nil)    
 }
 
 // JSONHandler handles the generation and display of JSON for D3 at the
