@@ -197,6 +197,8 @@ func GetSharedFollowings(users *[]string) (*Result) {
 
         followings[fIndex] = fs
         for _, f := range fs.Whoms {
+            // This checkSet/!resultSet combo is used to ensure a node only
+            // gets created on the second time a following is seen
             if checkSet[f] {
                 if !resultSet[f] {
                     // Append a new node onto the slice

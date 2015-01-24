@@ -1,13 +1,19 @@
 // JS for creating the soundcloud map with D3
 
-var width = window.innerWidth/1.7, 
+var width = window.innerWidth/1.9, 
     height = window.innerHeight;
 
 var color = d3.scale.category20()
 
+var linkDistance = 100;
+// Handle mobile
+if (width < (768 / 1.9)) {
+    linkDistance = 20;
+}
+
 var force = d3.layout.force()
     .charge(-120)
-    .linkDistance(100)
+    .linkDistance(linkDistance)
     .size([width, height]);
 
 var svg = d3.select("#graph").append("svg")
@@ -44,6 +50,13 @@ d3.json(jsonPath, function(error, graph) {
         .enter().append("circle")
         .attr("class", "node")
         .attr("r", function(d) { 
+            // Handle mobile
+            if (width < (768 / 1.9)) {
+                if (d.group != 1) {
+                    return d.weight * 1.5; 
+                }
+                return 5;
+            }
             if (d.group != 1) {
                 return d.weight * 3; 
             }
@@ -62,6 +75,17 @@ d3.json(jsonPath, function(error, graph) {
 
     // Remove the loading gif
     spinner.stop()
+
+    // Hover
+    $('svg circle').tipsy({ 
+        trigger: 'click',
+        gravity: 'e',
+        html: true, 
+        title: function() {
+          var d = this.__data__;
+          return d.name; 
+        }
+      });
 
     force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })

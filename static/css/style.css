@@ -259,6 +259,7 @@ p {
 .node {
     stroke: #E0E4CC;
     stroke-width: 1px;
+    outline: 0;
 }
 
 .link {

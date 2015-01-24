@@ -2,7 +2,6 @@
 
 // To do:
 //  - Add http-based error handling universally & logging
-//  - Add dynamic circle sizing
 //  - Add dynamic resizing w/o refresh
 //  - Add the About page
 //  - Break followings.go into more sub-functions

@@ -9,14 +9,17 @@
     {{ template "title" . }}
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-    
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"> 
+    {{ template "stylesheets" . }}
+
 </head>
 <body>
 
     <div class="site-wrapper">
 
         <div class="site-wrapper-inner">
+
+            
 
             <div class="cover-container">
 
@@ -56,12 +59,14 @@
                         <p>Built by <a href="https://twitter.com/lkvnstrs">Luke Van Seters</a></p>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     {{ template "scripts" . }}
 </body>
 </html>
 {{ end }}
 {{ define "scripts" }}{{ end }}
+{{ define "stylesheets" }}{{ end }}
