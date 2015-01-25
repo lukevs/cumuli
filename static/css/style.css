@@ -95,15 +95,16 @@ body {
 }
 
 h1, h2 {
+  font-weight: bold;
   padding: 0;
   margin: 0;
+  color: #4A93A2;
 }
 
 h1 {
   font-weight: bold;
   font-style: italic;
   font-size: 70px;
-  color: #4A93A2;
 }
 
 p {
@@ -128,6 +129,7 @@ p {
   margin-right: auto;
   margin-left: auto;
 }
+
 
 /* Padding for spacing */
 .inner {
@@ -180,18 +182,20 @@ p {
   }
 }
 
-/* Splash page icon */
-  #title-icon {
-    width: 90px;
-    height: 90px;
-  }
+/* 
+  Splash page icon 
+*/
+#title-icon {
+  width: 90px;
+  height: 90px;
+}
 
 /*
  * Cover
  */
 
 .cover {
-  padding: 0 20px;
+  padding: 0px 20px;
 }
 .cover .btn-lg {
   padding: 10px 20px;
@@ -217,6 +221,11 @@ p {
   h1 {
     font-size: 95px;
   }
+
+  .cover {
+    padding: 80px 20px;
+  }
+
   /* Resize the icon */
   #title-icon {
     width: 120px;
@@ -265,4 +274,21 @@ p {
 .link {
     stroke: #999;
     stroke-opacity: .6;
+}
+
+.about-heading {
+  margin-bottom: 35px;
+}
+
+.about-description {
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 15px;
+    margin-bottom: 50px;
+    font-size: 16px;
+
+}
+
+.clickable {
+    outline: 0;
 }

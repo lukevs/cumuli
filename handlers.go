@@ -27,6 +27,7 @@ func UserHandler(rw http.ResponseWriter, r *http.Request) {
 
     // Get the path base
     var jsonPath string = `/json/` + path.Base(r.URL.Path)
+    jsonPath = strings.Trim(jsonPath, "+")
 
     // Render the page
     renderTemplate(rw, "index.html", jsonPath)
@@ -110,6 +111,7 @@ func StaticHandler(rw http.ResponseWriter, r *http.Request) {
             return
         }
     }
+
     http.NotFound(rw, r)
 }
 

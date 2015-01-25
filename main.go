@@ -3,14 +3,12 @@
 // To do:
 //  - Add http-based error handling universally & logging
 //  - Add dynamic resizing w/o refresh
-//  - Add the About page
 //  - Break followings.go into more sub-functions
 //  - Patch MainHandler getting called 2/3 times
 //  - Add a search bar
 //      - http://jsbin.com/iyewas/73/edit?html,js,output
 //      - http://blogs.msdn.com/b/murads/archive/2013/02/20/using-jquery-ui-autocomplete-with-the-rest-api-to-get-search-results-in-the-search-box.aspx
 //      - http://stackoverflow.com/questions/14083272/how-to-make-a-tags-box-using-jquery-with-text-input-field-tags-separated-by
-//  - Fix mobile rendering
 
 package main 
 

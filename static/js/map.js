@@ -4,11 +4,14 @@ var width = window.innerWidth/1.9,
     height = window.innerHeight;
 
 var color = d3.scale.category20()
-
 var linkDistance = 100;
+var spinLength = 15;
+
 // Handle mobile
 if (width < (768 / 1.9)) {
-    linkDistance = 20;
+    height = height/2;
+    linkDistance = 50;
+    spinLength = 5
 }
 
 var force = d3.layout.force()
@@ -27,7 +30,7 @@ var jsonPath = scriptParam.getAttribute('jsonPath')
 // Loading gif
 var spinner = new Spinner({
   lines: 9,
-  length: 15,
+  length: spinLength,
   width: 5,
   radius: 20,
   color: '#4A93A2'
@@ -53,9 +56,9 @@ d3.json(jsonPath, function(error, graph) {
             // Handle mobile
             if (width < (768 / 1.9)) {
                 if (d.group != 1) {
-                    return d.weight * 1.5; 
+                    return d.weight * 2; 
                 }
-                return 5;
+                return 7;
             }
             if (d.group != 1) {
                 return d.weight * 3; 
@@ -85,7 +88,7 @@ d3.json(jsonPath, function(error, graph) {
           var d = this.__data__;
           return d.name; 
         }
-      });
+    });
 
     force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })
