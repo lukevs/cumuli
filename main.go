@@ -1,9 +1,8 @@
 // cumuli - A followings visualizer for SoundCloud
 
 // To do:
-//  - Add http-based error handling universally & logging
+//  - Add better logging
 //  - Add dynamic resizing w/o refresh
-//  - Break followings.go into more sub-functions
 //  - Patch MainHandler getting called 2/3 times
 //  - Add a search bar
 //      - http://jsbin.com/iyewas/73/edit?html,js,output
@@ -22,12 +21,13 @@ import (
     "path"
 
     "github.com/garyburd/redigo/redis"
+    "github.com/lkvnstrs/cumuli/networkmapper"
 )
 
 const TEMPLATES_DIR = `./templates`
 
 var (
-    clientId string
+    n networkmapper.NetworkMapper
     pool *redis.Pool
 )
 
@@ -40,11 +40,15 @@ func init() {
     loadTemplates()
 
     // Get the SoundCloud client Id
-    clientId = GetClientId()
+    clientId := GetClientId()
 
      // Initialize the pool
     redisServer, redisPassword := GetRedisInfo()
     pool = NewPool(redisServer, redisPassword)
+
+    // Initialize the networker
+    numResults := 50
+    n = networkmapper.NewNetworkMapper(clientId, numResults)
 
     // Routes
     http.HandleFunc("/", MainHandler)
@@ -59,7 +63,7 @@ func main() {
     // Get the web port
     port := GetWebPort()
 
-    // Defer close for the pool
+    // Defer close for the networker
     defer pool.Close()
 
     log.Println("Running on port ", port)
@@ -79,7 +83,8 @@ func loadTemplates() {
 
     for _, f := range files {
         if f.Name() != "base.html" {
-            templates[f.Name()] = template.Must(template.ParseFiles(path.Join(TEMPLATES_DIR, f.Name()), base))
+            mainPath := path.Join(TEMPLATES_DIR, f.Name())
+            templates[f.Name()] = template.Must(template.ParseFiles(mainPath, base))
         }
     }
 }
@@ -97,11 +102,11 @@ func GetWebPort() string {
 
 // GetClientId gets the Soundcloud API client id.
 func GetClientId() string {
-    ci := os.Getenv("SC_CLIENT_ID")
-    if ci == "" {
+    cid := os.Getenv("SC_CLIENT_ID")
+    if cid == "" {
         log.Fatal("You forgot SC_CLIENT_ID")
     }
-    return ci
+    return cid
 }
 
 // GetRedisInfo gets the port and password for the Redis database

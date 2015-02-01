@@ -3,7 +3,6 @@
 package main 
 
 import (
-    "encoding/json"
     "html/template"
     "net/http"
     "path"
@@ -11,9 +10,11 @@ import (
     "time"
 
     "github.com/garyburd/redigo/redis"
+    "github.com/lkvnstrs/cumuli/networkmapper"
 )
 
 var templates map[string]*template.Template
+const EXPIRE_TIME = 60 // in seconds
 
 // MainHandler handles the route '/'.
 func MainHandler(rw http.ResponseWriter, r *http.Request) {
@@ -46,9 +47,8 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
 
     var js []byte
 
-    // Create a connection to Redis
-    c := pool.Get()
-    defer c.Close()
+    conn := pool.Get()
+    defer conn.Close()
 
     // Get the path base
     key := path.Base(r.URL.Path)
@@ -58,38 +58,34 @@ func JSONHandler(rw http.ResponseWriter, r *http.Request) {
         rw.Write([]byte{})
     }
 
-    // Check the db for base as a key
-    js, err := redis.Bytes(c.Do("GET", key))
+    js, err := redis.Bytes(conn.Do("GET", key))
+
+    // Handle key doesn't exist
     if err == redis.ErrNil {
 
-        // Split fParam into individual users
         users := strings.Split(key, "+")
 
-        // Get the shared followings among the users
-        result := GetSharedFollowings(&users)    
-
-        // JSON marshal the result
-        js, err = json.Marshal(*result)
+        js, err = networkmapper.BuildNetworkMap(n, users[0:])
         if err != nil {
             http.Error(rw, err.Error(), http.StatusInternalServerError)
             return
         }
 
-        // Store the JSON in Redis
-        _, err = c.Do("SET", key, js)
+        // Store the result
+         _, err = conn.Do("SET", key, js)
         if err != nil {
             http.Error(rw, err.Error(), http.StatusInternalServerError)
             return
         }
 
-        // Hold on to the result for EXPIRE_TIME seconds
-        // to cover user refreshes
         go func (key string) {
             time.Sleep(time.Second * EXPIRE_TIME)
-            c := pool.Get()
-            defer c.Close()
-            c.Do("DEL", key)
-        } (key)    
+            conn := pool.Get()
+            defer conn.Close()
+            conn.Do("DEL", key)
+        } (key)
+        
+
     } else if err != nil {
         http.Error(rw, err.Error(), http.StatusInternalServerError)
         return
