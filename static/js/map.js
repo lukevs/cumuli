@@ -1,9 +1,8 @@
 // JS for creating the soundcloud map with D3
 
-var width = window.innerWidth/1.9, 
+var width = window.innerWidth/2, 
     height = window.innerHeight;
 
-var color = d3.scale.category20()
 var linkDistance = 100;
 var spinLength = 15;
 
@@ -15,9 +14,10 @@ if (width < (768 / 1.9)) {
 }
 
 var force = d3.layout.force()
-    .charge(-120)
+    .charge(-130)
     .linkDistance(linkDistance)
-    .size([width, height]);
+    .size([width, height])
+    .friction(0.8);
 
 var svg = d3.select("#graph").append("svg")
     .attr("width", width)
@@ -53,6 +53,7 @@ d3.json(jsonPath, function(error, graph) {
         .enter().append("circle")
         .attr("class", "node")
         .attr("r", function(d) { 
+
             // Handle mobile
             if (width < (768 / 1.9)) {
                 if (d.group != 1) {
@@ -60,6 +61,7 @@ d3.json(jsonPath, function(error, graph) {
                 }
                 return 7;
             }
+
             if (d.group != 1) {
                 return d.weight * 3; 
             }
@@ -90,13 +92,16 @@ d3.json(jsonPath, function(error, graph) {
         }
     });
 
+    var r = 10;
+
     force.on("tick", function() {
+        node.attr("cx", function(d) { return d.x = Math.max(r, Math.min(width - r, d.x)); })
+            .attr("cy", function(d) { return d.y = Math.max(r, Math.min(height - r, d.y)); });
+
         link.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
 
-        node.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
     });
 });

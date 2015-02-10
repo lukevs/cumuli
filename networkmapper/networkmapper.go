@@ -242,6 +242,9 @@ func GetSharedFollowings(n NetworkMapper, users []string) (*Result) {
             if checkSet[f] {
                 if !relevantSet[f] {
                     // Append a new node onto the slice
+                    if f == "" {
+                        continue
+                    }
                     nodes = append(nodes, Node{Name: f, Group: 2}) // Group: 2 -> following
                     nodeNums[f] = nodeCount
                     nodeCount++
